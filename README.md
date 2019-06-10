@@ -2,26 +2,18 @@ adxl345-python
 ==============
 
 ### Note
-This code is old and obsolete, you should use the Adafruit code from here: https://github.com/adafruit/Adafruit_Python_ADXL345
+This is library and scripts to run four ADXL345 accelerometers using a Raspberry Pi and display/save result on a remote PC. 
 
-Raspberry Pi Python i2c library for the ADXL3453-axis MEMS accelerometer IC which is used in breakout boards like the Adafruit ADXL345 Triple-Axis Accelerometer (http://shop.pimoroni.com/products/adafruit-triple-axis-accelerometer).
+You have to enable second (software) i2c bus in Raspbian adding line to `/boot/config.txt`:
 
-This library is a basic implementation of the i2c protocol for the IC offering a simple way to get started with it on the Raspberry Pi.
+```
+dtoverlay=i2c-gpio,bus=3
+```
 
-You can import the module and get a sensor reading like this:
+For every bus you have connect two ADXL345, one configured at address `0x1d` and second at `0x53`.
 
-    from adxl345 import ADXL345
+The script uses UDP protocol to send data over a network. Log into RPi using ssh and run the script:
 
-    adxl345 = ADXL345()
-
-    axes = adxl345.getAxes(True)
-    print "ADXL345 on address 0x%x:" % (adxl345.address)
-    print "   x = %.3fG" % ( axes['x'] )
-    print "   y = %.3fG" % ( axes['y'] )
-    print "   z = %.3fG" % ( axes['z'] )
-
-or you can run it directly from the command line like this:
-
-    sudo python ADXL345.py
+    python adxludp.py 192.168.8.109
     
-which will output the current x, y, and z axis readings in Gs.
+where `192.168.8.109` is your PC's IP. On the PC edit the `UDP_IP` variable inside the `udpplot.py` script.
